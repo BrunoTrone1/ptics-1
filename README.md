@@ -14,4 +14,4 @@ Este proyecto es un prototipo de una página web diseñada para mostrar la funci
 
 1. Clona el repositorio en tu máquina local:
    ```bash
-   git clone <URL_del_repositorio>
+   git clone https://github.com/BrunoTrone1/ptics-1
