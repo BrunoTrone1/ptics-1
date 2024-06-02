@@ -1,0 +1,406 @@
+/* Establece la fuente, el color de fondo y el color del texto para el cuerpo del documento, y elimina los márgenes y el relleno */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #011622;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Define el estilo del encabezado, con un fondo oscuro, relleno, y distribución flexible de los elementos */
+header {
+  background-color: #1a1a1a;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Establece el estilo del título dentro del encabezado, eliminando márgenes y centrando el texto */
+header h1 {
+  margin: 0;
+  font-size: 2em;
+  text-align: center;
+}
+
+/* Define un contenedor de navegación con una disposición flexible y espacio entre los elementos */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Alinea el contenido de la navegación a la izquierda */
+nav.left {
+  justify-content: flex-start;
+}
+
+/* Alinea el contenido de la navegación a la derecha */
+nav.right {
+  justify-content: flex-end;
+}
+
+/* Estilo de los enlaces dentro de la navegación, con color, relleno, sin subrayado y transición de color de fondo */
+nav a {
+  color: #ffffff;
+  padding: 15px 20px;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Cambia el color de fondo de los enlaces al pasar el ratón */
+nav a:hover {
+  background-color: #575757;
+}
+
+/* Contenedor principal con relleno y texto centrado */
+.container {
+  padding: 20px;
+  text-align: center;
+}
+
+/* Estilos específicos para dispositivos móviles (ancho máximo de 600px) */
+@media only screen and (max-width: 600px) {
+  /* Ajusta el tamaño de la fuente y el relleno del título dentro del encabezado */
+  header h1 {
+    font-size: 1.5em;
+    padding-right: 0;
+  }
+
+  /* Cambia la dirección de los elementos de navegación a columna */
+  nav {
+    flex-direction: column;
+  }
+
+  /* Ajusta el relleno de los enlaces de navegación en dispositivos móviles */
+  nav a {
+    padding: 10px;
+  }
+}
+
+/* Contenedor del formulario con fondo oscuro, relleno, bordes redondeados, sombra y centrado */
+.form-container {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin: 10px auto;
+}
+
+/* Contenedor de cada grupo de formulario, con margen inferior y texto alineado a la izquierda */
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+/* Estilo de las etiquetas dentro de los grupos de formulario */
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Estilo de los campos de entrada dentro de los grupos de formulario */
+.form-group input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Estilo del botón, con relleno, bordes redondeados, cursor de puntero y transición de color de fondo */
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-top: 10px;
+}
+
+/* Cambia el color de fondo del botón al pasar el ratón */
+button:hover {
+  background-color: #0288d1;
+}
+
+/* Estilo específico para el botón de registrar dispositivo, con margen superior, relleno, bordes redondeados y transición de color de fondo */
+#register-device-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  background-color: #0288d1;
+  color: #ffffff;
+}
+
+/* Cambia el color de fondo del botón de registrar dispositivo al pasar el ratón */
+#register-device-button:hover {
+  background-color: #0066b3;
+}
+
+/* Estilo de los enlaces dentro de la barra de navegación, con color, relleno, bordes redondeados y transición de color de fondo */
+.navbar-nav .nav-link {
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Cambia el color de fondo de los enlaces dentro de la barra de navegación al pasar el ratón */
+.navbar-nav .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Estilo de los enlaces activos o enfocados dentro de la barra de navegación */
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Estilo específico para el botón de registrar dispositivo, con margen superior, relleno, bordes redondeados, cursor de puntero y transición de color de fondo */
+#register-device-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  background-color: #0288d1;
+  color: #ffffff;
+}
+
+/* Cambia el color de fondo del botón de registrar dispositivo al pasar el ratón */
+#register-device-button:hover {
+  background-color: #0066b3;
+}
+
+/* Estilo del contenedor de botones, con margen superior */
+.btn-body {
+  margin-top: 10px;
+}
+
+/* Estilo de las imágenes dentro de los elementos del carrusel, con ancho del 10%, altura fija y ajuste de objeto */
+.carousel-item img {
+  width: 10%;
+  height: 600px;
+  object-fit: none;
+}
+
+/* Estilo del contenedor de botones, con margen superior */
+.btn-body {
+  margin-top: 10px;
+}
+
+/* Contenedor pequeño con ancho máximo de 800px */
+.container-small {
+  max-width: 800px;
+}
+
+/* Estilo de las imágenes dentro de los elementos del carrusel, con ancho máximo del 100%, altura automática y margen centrado */
+.carousel-item img {
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+}
+
+/* Estilo de los controles del carrusel, con ancho del 6%, altura del 50% y margen superior */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 6%;
+  height: 50%;
+  margin-top: 25%;
+  display: block;
+}
+
+/* Estilo de los iconos de los controles del carrusel, con ancho y altura específicos */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px;
+  height: 25px;
+}
+
+/* Estilo del contenedor de botones, con margen superior */
+.btn-body {
+  margin-top: 10px;
+}
+
+/* Contenedor pequeño con ancho máximo de 800px */
+.container-small {
+  max-width: 800px;
+}
+
+/* Estilo de las imágenes dentro de los elementos del carrusel, con ancho máximo del 100%, altura automática y margen centrado */
+.carousel-item img {
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+}
+
+/* Estilo de los controles del carrusel, con ancho del 5% */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+}
+
+/* Estilo de los iconos de los controles del carrusel, con ancho y altura específicos */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Estilo del contenedor de botones, con fondo oscuro, transición y borde */
+.btn-body {
+  background: #212529;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  border: #1a1a1a;
+}
+
+/* Cambia la transformación y el color de fondo del contenedor de botones al pasar el ratón */
+.btn-body:hover {
+  transform: scale(1.1);
+  background-color: #00bcd4;
+  border: #016674;
+}
+
+/* Cambia el color de fondo de los controles del carrusel al pasar el ratón */
+.carousel-control-next:hover,
+.carousel-control-prev:hover {
+  background-color: transparent;
+}
+
+/* Estilo de los iconos de los controles del carrusel, con color de fondo transparente e inversión de filtro */
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  background-color: transparent;
+  filter: invert(100%);
+}
+
+/* Cambia la transformación y el color de fondo de los iconos de los controles del carrusel al pasar el ratón */
+.carousel-control-next:hover .carousel-control-next-icon,
+.carousel-control-prev:hover .carousel-control-prev-icon {
+  background-color: transparent;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Estilo de las imágenes dentro de los elementos del carrusel, con ancho máximo del 100%, altura automática, margen centrado y bordes redondeados */
+.carousel-item img {
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+  border-radius: 5%;
+}
+
+/* Cambia la transformación y el color de fondo del elemento de navegación al pasar el ratón */
+.nav-item:hover {
+  transform: scale(1.1);
+  background-color: #00bcd4;
+  border: #016674;
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Sección de información con relleno */
+.info-section {
+  padding: 50px 0;
+}
+
+/* Título de la información con tamaño de fuente grande, negrita y color */
+.info-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #00bcd4;
+  margin-bottom: 30px;
+}
+
+/* Subtítulo de la información con tamaño de fuente medio, negrita, color y margen */
+.info-subtitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #00bcd4;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* Texto de la información con tamaño de fuente normal, interlineado y margen */
+.info-text {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Lista de información sin estilo de lista y sin relleno */
+.info-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 20px;
+}
+
+/* Elemento de la lista de información con margen inferior */
+.info-list li {
+  margin-bottom: 10px;
+}
+
+/* Caja de información con borde, bordes redondeados, relleno, transición, fondo y margen */
+.info-box {
+  border: 2px solid #00bcd4;
+  border-radius: 0.5rem;
+  padding: 20px;
+  transition: all 0.3s ease;
+  background-color: #003f47;
+  margin-bottom: 20px;
+  height: 100%;
+}
+
+/* Cambia la transformación y la sombra de la caja de información al pasar el ratón */
+.info-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del campo de entrada de formulario al recibir el foco, con borde y sombra */
+.form-group input:focus {
+  border-color: #00e3f0;
+  box-shadow: 0 0 5px rgba(0, 227, 240, 0.5);
+  outline: none;
+}
+
+/* Contenedor del formulario con fondo semitransparente, relleno, bordes redondeados, sombra y centrado */
+.form-container {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 50px auto;
+}
+
+/* Grupo de formulario con posición relativa */
+.form-group {
+  position: relative;
+}
+
+/* Campo de entrada de formulario con relleno adicional a la izquierda */
+.form-group input {
+  padding-left: 2.5rem;
+}
+
+/* Icono dentro del grupo de formulario con posición absoluta y color */
+.form-group .fas {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+/* Estilo del campo de entrada de formulario al recibir el foco, con borde y sombra */
+.form-group input:focus {
+  border-color: #00e3f0;
+  box-shadow: 0 0 5px rgba(0, 227, 240, 0.5);
+  outline: none;
+}

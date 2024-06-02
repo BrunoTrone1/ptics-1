@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrar Dispositivo</title>
+    <link rel="stylesheet" href="../public/styles.css" />
+  </head>
+  <body>
+    <h1>Registrar Dispositivo</h1>
+    <% if (messages.error) { %>
+    <div class="error"><%= messages.error %></div>
+    <% } %> <% if (messages.success) { %>
+    <div class="success"><%= messages.success %></div>
+    <% } %>
+    <form action="/register-device" method="POST">
+      <label for="deviceId">ID del Dispositivo:</label>
+      <input type="text" name="deviceId" id="deviceId" required />
+      <button type="submit">Registrar Dispositivo</button>
+    </form>
+  </body>
+</html>
