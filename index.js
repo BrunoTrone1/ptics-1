@@ -15,7 +15,7 @@ const app = express();
 app.use(express.static("public"));
 
 // MongoDB Connection
-mongoose.connect("mongodb://localhost/votingapp", {
+mongoose.connect("mongodb://localhost:27017/your-database-name", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -71,9 +71,7 @@ app.post("/register", (req, res) => {
       from: "your-email@gmail.com",
       to: user.email,
       subject: "Verificación de Correo",
-      text:
-        "Por favor, verifique su correo en el siguiente link: http://localhost:3000/verify?email=" +
-        user.email,
+      text: `Por favor, verifique su correo en el siguiente link: http://localhost:3000/verify?email=${user.email}`,
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -117,9 +115,14 @@ app.post(
 );
 
 app.get("/logout", (req, res) => {
-  req.logout();
-  req.flash("success", "Haz cerrado tu cuenta");
-  res.redirect("/");
+  req.logout((err) => {
+    if (err) {
+      req.flash("error", err.message);
+      return res.redirect("/");
+    }
+    req.flash("success", "Haz cerrado tu cuenta");
+    res.redirect("/");
+  });
 });
 
 app.get("/register-device", (req, res) => {
@@ -152,6 +155,26 @@ app.post("/register-device", (req, res) => {
     }
     req.flash("success", "Dispositivo registrado correctamente");
     res.redirect("/");
+  });
+});
+
+// Ruta para obtener los dispositivos del usuario autenticado
+app.get("/view-devices", (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash(
+      "error",
+      "Necesitas acceder a tu cuenta para ver tus dispositivos"
+    );
+    return res.redirect("/login");
+  }
+
+  Device.find({ user: req.user._id }, (err, devices) => {
+    if (err) {
+      req.flash("error", "No se pudieron recuperar los dispositivos");
+      return res.redirect("/");
+    }
+
+    res.render("view-devices", { devices: devices });
   });
 });
 

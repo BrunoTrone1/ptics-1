@@ -404,3 +404,42 @@ button:hover {
   box-shadow: 0 0 5px rgba(0, 227, 240, 0.5);
   outline: none;
 }
+
+/* Estilos adicionales para los botones del cuerpo */
+.btn-body {
+  margin-top: 10px; /* Espacio entre botones */
+}
+
+/* Estilos para el contenedor principal */
+.container-small {
+  max-width: 800px; /* Ancho máximo del contenedor */
+}
+
+/* Estilos para la galería de imágenes */
+.carousel-item img {
+  max-width: 100%;
+  height: auto;
+  margin: auto; /* Centrar las imágenes */
+}
+
+/* Estilos para los botones del carrusel */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Estilos para la lista de dispositivos */
+.list-group-item {
+  margin-bottom: 10px; /* Espacio entre elementos de la lista */
+  border-radius: 5px; /* Bordes redondeados */
+}
+
+.list-group-item h5 {
+  color: #007bff; /* Color del título del dispositivo */
+}
