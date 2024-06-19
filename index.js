@@ -1,28 +1,32 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const User = require("./models/user.js");
+const User = require("./models/user");
 const Device = require("./models/device.js");
-const nodemailer = require("nodemailer");
+const path = require("path");
 
 const app = express();
 
-// Configuración para servir archivos estáticos
-app.use(express.static("public"));
+// Configuración para servir archivos estáticos desde la carpeta public
+app.use(express.static(path.join(__dirname, "public")));
 
-// MongoDB Connection
-mongoose.connect("mongodb://localhost:27017/your-database-name", {
+// Configuración del motor de plantillas EJS
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Middleware para procesar datos de formularios
+app.use(express.urlencoded({ extended: true }));
+
+// Conexión a MongoDB
+mongoose.connect("mongodb://localhost:27017/test1", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// Configuración de express-session
 app.use(
   session({
     secret: "secret",
@@ -30,99 +34,113 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+// Configuración de connect-flash para mensajes flash
 app.use(flash());
 
-// Passport.js
+// Configuración de Passport.js
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Middleware para pasar mensajes flash a las vistas
+app.use((req, res, next) => {
+  res.locals.success_messages = req.flash("success");
+  res.locals.error_messages = req.flash("error");
+  res.locals.isLoggedIn = req.isAuthenticated();
+  next();
+});
+
+// Configuración de Passport para la autenticación local
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Nodemailer configuration
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "your-email@gmail.com",
-    pass: "your-email-password",
-  },
-});
-
 // Rutas
+
+// Página de inicio
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
+  res.render("index");
 });
 
+// Página de registro
 app.get("/register", (req, res) => {
-  res.sendFile(__dirname + "/public/register.html");
+  res.render("register", { error: req.flash("error") });
 });
 
-app.post("/register", (req, res) => {
-  const newUser = new User({
-    username: req.body.username,
-    email: req.body.email,
-  });
-  User.register(newUser, req.body.password, (err, user) => {
-    if (err) {
-      req.flash("error", err.message);
+// Manejo del formulario de registro
+app.post("/register", async (req, res) => {
+  try {
+    // Verificar si el username o el email ya existen en la base de datos
+    const existingUser = await User.findOne({
+      $or: [{ username: req.body.username }, { email: req.body.email }],
+    });
+
+    if (existingUser) {
+      if (existingUser.username === req.body.username) {
+        req.flash("error", "Ya existe un usuario con ese nombre de usuario.");
+      } else if (existingUser.email === req.body.email) {
+        req.flash("error", "El correo electrónico ya está registrado.");
+      }
       return res.redirect("/register");
     }
-    const mailOptions = {
-      from: "your-email@gmail.com",
-      to: user.email,
-      subject: "Verificación de Correo",
-      text: `Por favor, verifique su correo en el siguiente link: http://localhost:3000/verify?email=${user.email}`,
-    };
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return console.log(error);
-      }
-      console.log("Verificación de correo enviado a: " + info.response);
-    });
-    passport.authenticate("local")(req, res, () => {
-      req.flash(
-        "success",
-        "Ahora estas registrado/a. Por favor revise su correo para verificar su cuenta."
-      );
-      res.redirect("/");
-    });
-  });
-});
 
-app.get("/verify", (req, res) => {
-  const email = req.query.email;
-  User.findOneAndUpdate({ email: email }, { verified: true }, (err, user) => {
-    if (err) {
-      req.flash("error", err.message);
-      return res.redirect("/");
-    }
-    req.flash("success", "Tu correo ha sido verificado. Ahora puedes acceder.");
-    res.redirect("/login");
-  });
+    // Si no existe, procedemos a registrar al usuario
+    const newUser = new User({
+      username: req.body.username,
+      email: req.body.email,
+      verified: true, // Opcional: Marcar como verificado automáticamente
+    });
+
+    // Intentar registrar al usuario
+    await User.register(newUser, req.body.password);
+
+    // Autenticar al usuario y redirigir a la página principal
+    req.flash("success", "¡Registro exitoso!");
+    res.redirect("/");
+  } catch (err) {
+    // Manejo de errores de registro
+    req.flash("error", err.message);
+    res.redirect("/register");
+  }
 });
 
 app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/public/login.html");
+  res.render("login", { error: req.flash("error")[0] }); // Renderiza la vista login.ejs con el primer mensaje de error
 });
 
-app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureFlash: true,
-  })
-);
-
-app.get("/logout", (req, res) => {
-  req.logout((err) => {
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    const errors = [];
     if (err) {
-      req.flash("error", err.message);
-      return res.redirect("/");
+      errors.push(err.message);
     }
-    req.flash("success", "Haz cerrado tu cuenta");
-    res.redirect("/");
-  });
+    if (!user) {
+      errors.push("Usuario no encontrado");
+    }
+
+    // Si hay errores, renderizamos login.ejs con los errores
+    if (errors.length > 0) {
+      res.render("login", { errors });
+    } else {
+      // Si no hay errores, iniciamos sesión y redirigimos
+      req.logIn(user, (err) => {
+        if (err) {
+          errors.push(err.message);
+          res.render("login", { errors });
+        } else {
+          req.flash("success", "¡Bienvenido de nuevo!");
+          res.redirect("/");
+        }
+      });
+    }
+  })(req, res, next);
+});
+
+// Cerrar sesión
+app.get("/logout", (req, res) => {
+  req.logout();
+  req.flash("success", "Has cerrado tu sesión.");
+  res.redirect("/");
 });
 
 app.get("/register-device", (req, res) => {
@@ -133,10 +151,10 @@ app.get("/register-device", (req, res) => {
     );
     return res.redirect("/login");
   }
-  res.sendFile(__dirname + "/public/register-device.html");
+  res.render("register-device");
 });
 
-app.post("/register-device", (req, res) => {
+app.post("/register-device", async (req, res) => {
   if (!req.isAuthenticated()) {
     req.flash(
       "error",
@@ -144,22 +162,23 @@ app.post("/register-device", (req, res) => {
     );
     return res.redirect("/login");
   }
-  const newDevice = new Device({
-    user: req.user._id,
-    deviceId: req.body.deviceId,
-  });
-  newDevice.save((err) => {
-    if (err) {
-      req.flash("error", err.message);
-      return res.redirect("/register-device");
-    }
+  try {
+    const newDevice = new Device({
+      user: req.user._id,
+      deviceId: req.body.deviceId,
+      deviceName: req.body.deviceName, // Asegúrate de que este campo coincida con el `name` del input
+    });
+    await newDevice.save();
     req.flash("success", "Dispositivo registrado correctamente");
     res.redirect("/");
-  });
+  } catch (err) {
+    req.flash("error", err.message);
+    res.redirect("/register-device");
+  }
 });
 
-// Ruta para obtener los dispositivos del usuario autenticado
-app.get("/view-devices", (req, res) => {
+// Ruta para obtener los dispositivos del usuario autenticado en formato JSON
+app.get("/view-devices-json", async (req, res) => {
   if (!req.isAuthenticated()) {
     req.flash(
       "error",
@@ -168,16 +187,47 @@ app.get("/view-devices", (req, res) => {
     return res.redirect("/login");
   }
 
-  Device.find({ user: req.user._id }, (err, devices) => {
-    if (err) {
-      req.flash("error", "No se pudieron recuperar los dispositivos");
-      return res.redirect("/");
-    }
-
-    res.render("view-devices", { devices: devices });
-  });
+  try {
+    const devices = await Device.find({ user: req.user._id });
+    res.json(devices); // Enviar los dispositivos como respuesta en formato JSON
+  } catch (err) {
+    req.flash("error", "No se pudieron recuperar los dispositivos");
+    res.status(500).json({ error: err.message });
+  }
 });
 
+// Ruta para obtener los dispositivos del usuario autenticado
+app.get("/view-devices", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash(
+      "error",
+      "Necesitas acceder a tu cuenta para ver tus dispositivos"
+    );
+    return res.redirect("/login");
+  }
+
+  try {
+    const devices = await Device.find({ user: req.user._id });
+    res.render("view-devices", { devices }); // Renderizar la vista view-devices con los datos de los dispositivos
+  } catch (err) {
+    req.flash("error", "No se pudieron recuperar los dispositivos");
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Middleware para verificar si el usuario está autenticado
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  req.flash(
+    "error",
+    "Necesitas acceder a tu cuenta para realizar esta acción."
+  );
+  res.redirect("/login");
+}
+
+// Escuchar en el puerto 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor en el puerto ${PORT}`);

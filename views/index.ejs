@@ -1,161 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-    <link rel="stylesheet" href="/styles.css" />
-    <style>
-      body {
-        font-family: "Arial", sans-serif;
-        background-color: #0a0f24;
-        color: #ffffff;
-        margin: 0;
-        padding: 0;
-      }
-
-      header {
-        background-color: #1a1a1a;
-        padding: 10px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      header h1 {
-        margin: 0;
-        font-size: 2em;
-        flex: 1;
-        text-align: center;
-      }
-
-      nav {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-      }
-
-      nav.left {
-        justify-content: flex-start;
-      }
-
-      nav.right {
-        justify-content: flex-end;
-      }
-
-      nav a {
-        color: #ffffff;
-        padding: 15px 20px;
-        text-decoration: none;
-        transition: background-color 0.2s ease-in-out;
-      }
-
-      nav a:hover {
-        background-color: #575757;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        min-height: calc(
-          100vh - 120px
-        ); /* Adjust for header and footer height */
-        text-align: center;
-      }
-
-      .welcome-message {
-        margin-bottom: 20px;
-      }
-
-      .button-container {
-        display: flex;
-        gap: 10px; /* Space between buttons */
-        margin-bottom: 15px;
-      }
-
-      button {
-        width: 150px; /* Fixed button width */
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out; /* Smooth hover effect */
-      }
-
-      .button-container button:nth-child(1) {
-        background-color: #00bcd4; /* Blue button */
-        color: #0a0f24;
-      }
-
-      .button-container button:nth-child(1):hover {
-        background-color: #0288d1;
-      }
-
-      .button-container button:nth-child(2) {
-        background-color: #4caf50; /* Green button */
-        color: #ffffff;
-      }
-
-      .button-container button:nth-child(2):hover {
-        background-color: #388e3c;
-      }
-
-      footer {
-        background-color: #1a1a1a;
-        color: #ffffff;
-        text-align: center;
-        padding: 10px 0;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-      }
-    </style>
+    <title>SafeDevice</title>
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Iconos -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <header>
-      <nav class="left">
-        <a href="/">Inicio</a>
-        <a href="/about">Acerca de</a>
-        <a href="/contact">Contacto</a>
-      </nav>
-      <h1>Bienvenido</h1>
-      <nav class="right">
-        <% if (user) { %>
-        <a href="/logout">Logout</a>
-        <% } else { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-        <% } %>
-      </nav>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Barra de navegacion -->
+    <header class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <h1><i class="fas fa-shield-alt"></i> SafeDevice</h1>
+        </a>
+        <nav class="navbar navbar-expand-lg">
+          <!-- Links para las demas rutas -->
+          <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+              <% if (!isLoggedIn) { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/register">Registrarse</a>
+              </li>
+              <% } %> <% if (isLoggedIn) { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/register-device"
+                  >Registrar Dispositivo</a
+                >
+              </li>
+              <% } %> <% if (!isLoggedIn) { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/login">Iniciar Sesión</a>
+              </li>
+              <% } %> <% if (isLoggedIn) { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/view-devices">Ver Dispositivos</a>
+              </li>
+              <% } %><% if (isLoggedIn) { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Salir</a>
+              </li>
+              <% } %>
+            </ul>
+          </div>
+        </nav>
+      </div>
     </header>
-    <div class="container">
+    <!-- Cuerpo/Body -->
+    <div class="container container-small flex-grow-1">
       <div class="welcome-message">
-        <% if (user) { %>
-        <p>Hola, <%= user.username %>!</p>
-        <% } else { %>
-        <p>
-          Bienvenido a nuestra aplicación. Por favor, regístrate o inicia
-          sesión.
+        <h1 class="display-4">Bienvenido a SafeDevice</h1>
+        <p class="lead">
+          Este sistema utiliza tecnología de sensores ultrasónicos para detectar
+          movimientos y mantener tu hogar seguro. A continuación, podrás
+          registrarte, acceder a tu cuenta o salir de la sesión.
         </p>
+      </div>
+      <!-- Botones en el cuerpo/body con las rutas -->
+      <div class="row">
+        <!-- register -->
+        <% if (!isLoggedIn) { %>
+        <div class="col mt-4">
+          <button
+            class="btn btn-primary btn-lg btn-body"
+            onclick="window.location.href='/register'"
+          >
+            Registrarse
+          </button>
+        </div>
         <% } %>
-      </div>
-      <% if (user) { %>
-      <div class="button-container">
-        <a href="/logout"><button>Logout</button></a>
-        <a href="/register-device"><button>Registrar un Dispositivo</button></a>
-      </div>
-      <% } else { %>
-      <div class="button-container">
-        <a href="/login"><button>Login</button></a>
-        <a href="/register"><button>Register</button></a>
+        <!-- register-device -->
+        <% if (isLoggedIn) { %>
+        <div class="col mt-4">
+          <button
+            class="btn btn-primary btn-lg btn-body"
+            onclick="window.location.href='/register-device'"
+          >
+            Registrar Dispositivo
+          </button>
+        </div>
+        <% } %>
+        <!-- login -->
+        <% if (!isLoggedIn) { %>
+        <div class="col mt-4">
+          <button
+            class="btn btn-primary btn-lg btn-body"
+            onclick="window.location.href='/login'"
+          >
+            Iniciar Sesión
+          </button>
+        </div>
       </div>
       <% } %>
+      <!-- register devices -->
+      <% if (isLoggedIn) { %>
+      <div class="col row mt-4">
+        <button
+          class="btn btn-primary btn-lg btn-body"
+          onclick="window.location.href='/view-devices'"
+        >
+          Ver Dispositivos Registrados
+        </button>
+      </div>
+      <% } %>
+      <!-- Slide -->
+      <div
+        id="carouselExampleControls"
+        class="carousel slide mt-5"
+        data-bs-ride="carousel"
+        style="margin-bottom: 5%"
+      >
+        <!-- Imagen 1 -->
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img
+              src="images/pt1.jpg"
+              class="d-block w-100"
+              alt="Descripción de la imagen 1"
+            />
+          </div>
+          <!-- Imagen 2 -->
+          <div class="carousel-item">
+            <img
+              src="images/pt2.jpg"
+              class="d-block w-100"
+              alt="Descripción de la imagen 2"
+            />
+          </div>
+        </div>
+        <!-- Botones del slide -->
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Anterior</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Siguiente</span>
+        </button>
+      </div>
     </div>
-    <footer>
-      <p>&copy; 2024 Tu Compañía. Todos los derechos reservados.</p>
-    </footer>
+    <!-- Seccion de informacion -->
+    <div class="info-section">
+      <div class="container">
+        <h2 class="info-title">Información sobre SafeDevice</h2>
+        <!-- Filas de a 2 -->
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <!-- Cajas con informacion -->
+            <div class="info-box">
+              <h3 class="info-subtitle">Propuesta de valor</h3>
+              <p class="info-text">
+                Monitorización en tiempo real con detección de movimiento
+                mediante sensor ultrasónico. Alertas instantáneas tanto físicas
+                (buzzer) como digitales (notificaciones a través de una página
+                web). Facilidad de instalación: El dispositivo está diseñado
+                para ser fácil de instalar, permitiendo a los usuarios
+                configurar el sistema rápidamente.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Segmento de clientes</h3>
+              <ul class="info-list">
+                <li>
+                  Dueños de hogares interesados en monitorización y alarma para
+                  objetos de valor.
+                </li>
+                <li>
+                  Empresas/Tiendas que requieren monitorización y alarma de
+                  equipos en exhibición.
+                </li>
+                <li>Museos/Galerías de arte.</li>
+                <li>Ferias/Exposiciones.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Relaciones con el cliente</h3>
+              <ul class="info-list">
+                <li>
+                  Soporte técnico online y telefónico para resolver problemas y
+                  ayudar en la configuración del dispositivo.
+                </li>
+                <li>
+                  Capacitaciones online que ofrecen tutoriales sobre el uso del
+                  dispositivo.
+                </li>
+                <li>
+                  Actualizaciones de software/hardware ofreciendo garantía que
+                  el dispositivo se mantenga con mejoras.
+                </li>
+                <li>
+                  Comunicación directa a través de redes sociales (RRSS),
+                  proporcionando soporte, noticias y actualizaciones.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Canales de comunicación</h3>
+              <ul class="info-list">
+                <li>Venta directa a través de la página web de la empresa.</li>
+                <li>
+                  Marketing digital a través de diferentes plataformas como RRSS
+                  y Google ADS.
+                </li>
+                <li>
+                  Distribución a través de socios comerciales que facilitan la
+                  llegada del producto a diferentes puntos de venta.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Actividades clave</h3>
+              <ul class="info-list">
+                <li>
+                  Mejoras continuas del dispositivo: Investigación y desarrollo
+                  constante para mejorar las funcionalidades del dispositivo.
+                </li>
+                <li>
+                  Mantenimiento/Actualización página web para asegurar el
+                  correcto funcionamiento.
+                </li>
+                <li>
+                  Gestión de relaciones: Mantenimiento de relaciones fuertes y
+                  positivas con clientes y socios, asegurando su satisfacción y
+                  lealtad.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Recursos clave</h3>
+              <ul class="info-list">
+                <li>
+                  Equipo de desarrollo de software y hardware, para innovar y
+                  mejorar el dispositivo.
+                </li>
+                <li>
+                  Infraestructura web, como servidores y plataformas digitales
+                  para soportar la monitorización en tiempo real eficiente.
+                </li>
+                <li>
+                  Redes de distribuidores que faciliten la llegada del producto
+                  a diferentes mercados.
+                </li>
+                <li>
+                  Equipo soporte técnico capacitado para brindar asistencia a
+                  cada cliente.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Socios clave</h3>
+              <ul class="info-list">
+                <li>Fabricantes/Proveedores de componentes.</li>
+                <li>
+                  Integradores de seguridad: Empresas que pueden incorporar Safe
+                  Device en sus sistemas.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Fuente de ingresos</h3>
+              <ul class="info-list">
+                <li>Venta directa del hardware.</li>
+                <li>
+                  Pack de dispositivos (múltiples dispositivos a un precio
+                  reducido).
+                </li>
+                <li>
+                  Contrato con integradores de seguridad: Ingresos provenientes
+                  de acuerdos con empresas que integren Safe Device.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-12 mb-4">
+            <div class="info-box">
+              <h3 class="info-subtitle">Estructura de gastos</h3>
+              <ul class="info-list">
+                <li>
+                  Desarrollo y producción del hardware: Costos asociados con la
+                  investigación, desarrollo y fabricación de los dispositivos.
+                </li>
+                <li>Mantenimiento de la plataforma web y servidores.</li>
+                <li>Costos de marketing.</li>
+                <li>Recursos humanos.</li>
+                <li>Logística y distribución.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- footer -->
+    <!-- footer -->
+    <div class="footer py-3 text-white mt-auto">
+      <div class="container text-center">
+        <p>&copy; 2024 SafeDevice. Todos los derechos reservados.</p>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    </script>
   </body>
 </html>

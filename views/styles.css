@@ -451,3 +451,33 @@ button:hover {
   border: none;
   border-radius: 5px;
 }
+/* Estilo para el botón de inicio en la barra de navegación */
+.home-button {
+  display: flex;
+  align-items: center;
+}
+
+.home-button i {
+  margin-right: 5px; /* Espacio entre el icono y el texto */
+  font-size: 1.2em; /* Tamaño del icono */
+}
+
+.home-button:hover {
+  background-color: #575757; /* Cambio de color al pasar el ratón */
+  transition: background-color 0.2s ease-in-out; /* Transición suave */
+}
+.navbar-brand h1 {
+  display: flex;
+  align-items: center;
+  font-size: 1.8em; /* Tamaño del título */
+}
+
+.navbar-brand h1 i {
+  margin-right: 10px; /* Espacio entre el icono y el texto */
+  font-size: 1.5em; /* Tamaño del icono */
+}
+
+.navbar-brand h1:hover {
+  text-decoration: none; /* Elimina el subrayado al pasar el ratón */
+  transition: background-color 0.2s ease-in-out;
+}

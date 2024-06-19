@@ -52,13 +52,14 @@
         </p>
       </div>
 
-      <form>
+      <form action="/register-device" method="POST">
         <div class="mb-3">
           <label for="deviceId" class="form-label">ID del Dispositivo</label>
           <input
             type="text"
             class="form-control"
             id="deviceId"
+            name="deviceId"
             placeholder="Ingrese el ID del dispositivo"
             required
           />
