@@ -1,5 +1,3 @@
-<!-- views/view-devices.html -->
-
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -116,15 +114,40 @@
 
             const deviceInfo = document.createElement("p");
             deviceInfo.classList.add("device-info");
-            deviceInfo.textContent = `Usuario: ${device.user}`;
+            deviceInfo.textContent = `Nombre: ${device.deviceName}`;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.classList.add("btn", "btn-danger");
+            deleteButton.textContent = "Eliminar";
+            deleteButton.onclick = () => deleteDevice(device._id);
 
             deviceCard.appendChild(deviceTitle);
             deviceCard.appendChild(deviceInfo);
+            deviceCard.appendChild(deleteButton);
 
             devicesList.appendChild(deviceCard);
           });
         } catch (error) {
           console.error("Error al cargar los dispositivos:", error);
+        }
+      }
+
+      // Función para eliminar un dispositivo
+      async function deleteDevice(deviceId) {
+        try {
+          const response = await fetch(`/delete-device/${deviceId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            // Recargar la lista de dispositivos después de eliminar uno
+            document.getElementById("devicesList").innerHTML = "";
+            loadDevices();
+          } else {
+            console.error("Error al eliminar el dispositivo");
+          }
+        } catch (error) {
+          console.error("Error al eliminar el dispositivo:", error);
         }
       }
 

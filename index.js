@@ -216,6 +216,27 @@ app.get("/view-devices", async (req, res) => {
   }
 });
 
+// Ruta para eliminar un dispositivo
+app.delete("/delete-device/:id", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash(
+      "error",
+      "Necesitas acceder a tu cuenta para eliminar un dispositivo"
+    );
+    return res.status(401).json({ error: "No autenticado" });
+  }
+
+  try {
+    const deviceId = req.params.id;
+    await Device.findOneAndDelete({ _id: deviceId, user: req.user._id });
+    req.flash("success", "Dispositivo eliminado correctamente");
+    res.status(200).json({ message: "Dispositivo eliminado correctamente" });
+  } catch (err) {
+    req.flash("error", "No se pudo eliminar el dispositivo");
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Middleware para verificar si el usuario está autenticado
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
