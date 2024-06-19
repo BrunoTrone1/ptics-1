@@ -21,10 +21,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 
 // Conexión a MongoDB
-mongoose.connect("mongodb://localhost:27017/test1", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect("mongodb://localhost:27017/test1", {});
 
 // Configuración de express-session
 app.use(
@@ -137,10 +134,14 @@ app.post("/login", (req, res, next) => {
 });
 
 // Cerrar sesión
-app.get("/logout", (req, res) => {
-  req.logout();
-  req.flash("success", "Has cerrado tu sesión.");
-  res.redirect("/");
+app.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err); // Pasa el error al middleware de manejo de errores
+    }
+    req.flash("success", "Has cerrado tu sesión.");
+    res.redirect("/");
+  });
 });
 
 app.get("/register-device", (req, res) => {
