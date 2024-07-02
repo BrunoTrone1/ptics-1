@@ -7,6 +7,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const User = require("./models/user");
 const Device = require("./models/device.js");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.set("views", path.join(__dirname, "views"));
 // Middleware para procesar datos de formularios
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware para analizar cookies
+app.use(cookieParser());
+
 // Conexión a MongoDB
 mongoose.connect("mongodb://localhost:27017/test1", {});
 
@@ -27,8 +31,13 @@ mongoose.connect("mongodb://localhost:27017/test1", {});
 app.use(
   session({
     secret: "secret",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 día
+      secure: false, // Cambia a true si usas HTTPS
+      httpOnly: true,
+    },
   })
 );
 
@@ -248,6 +257,55 @@ function isLoggedIn(req, res, next) {
   );
   res.redirect("/login");
 }
+
+// Ruta para ver el historial de un dispositivo
+app.get("/device-history", isLoggedIn, (req, res) => {
+  res.render("device-history");
+});
+
+// Ruta para obtener el historial del dispositivo en formato JSON
+app.get("/device-history-json/:deviceId", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash(
+      "error",
+      "Necesitas acceder a tu cuenta para ver el historial de dispositivos"
+    );
+    return res.status(401).json({ error: "No autenticado" });
+  }
+
+  try {
+    const deviceId = req.params.deviceId;
+    const history = await Device.findOne({
+      _id: deviceId,
+      user: req.user._id,
+    }).select("history");
+    res.json({ history: history ? history.history : [] });
+  } catch (err) {
+    req.flash("error", "No se pudo recuperar el historial del dispositivo");
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Ruta para ver el historial de un dispositivo específico
+app.get("/device-history/:deviceId", isLoggedIn, async (req, res) => {
+  try {
+    const deviceId = req.params.deviceId;
+    const device = await Device.findOne({ _id: deviceId, user: req.user._id });
+
+    if (!device) {
+      req.flash(
+        "error",
+        "Dispositivo no encontrado o no tienes permisos para verlo."
+      );
+      return res.redirect("/view-devices");
+    }
+
+    res.render("device-history", { device });
+  } catch (err) {
+    req.flash("error", "No se pudo recuperar el historial del dispositivo");
+    res.redirect("/view-devices");
+  }
+});
 
 // Escuchar en el puerto 3000
 const PORT = process.env.PORT || 3000;

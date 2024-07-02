@@ -23,6 +23,7 @@
         border: 1px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #68a7fa;
       }
       .device-title {
         font-size: 1.5rem;
@@ -32,6 +33,17 @@
       .device-info {
         font-size: 1rem;
         line-height: 1.4;
+        margin-bottom: 15px;
+      }
+      .button-container {
+        display: flex;
+        justify-content: space-evenly;
+      }
+      .button-container .btn {
+        margin-right: 5px;
+      }
+      .form-container {
+        margin-bottom: 0px;
       }
     </style>
   </head>
@@ -40,10 +52,10 @@
     <header class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">
-          <h1><i class="fas fa-shield-alt"></i> SafeDevice</h1>
+          <h1><i class="fas fa-shield-alt"></i> Safe Device</h1>
         </a>
         <nav class="navbar navbar-expand-lg">
-          <!-- Links para las demas rutas -->
+          <!-- Links para las demás rutas -->
           <div class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav">
               <% if (!isLoggedIn) { %>
@@ -81,14 +93,14 @@
         <p class="lead">Aquí se muestran los dispositivos registrados.</p>
       </div>
 
-      <div id="devicesList">
+      <div id="devicesList" class="row">
         <!-- Aquí se agregarán los dispositivos dinámicamente -->
       </div>
     </div>
 
     <div class="footer py-3 text-white mt-auto">
       <div class="container text-center">
-        <p>&copy; 2024 SafeDevice. Todos los derechos reservados.</p>
+        <p>&copy; 2024 Safe Device. Todos los derechos reservados.</p>
       </div>
     </div>
 
@@ -106,7 +118,7 @@
 
           devices.forEach((device) => {
             const deviceCard = document.createElement("div");
-            deviceCard.classList.add("device-card");
+            deviceCard.classList.add("row", "form-container");
 
             const deviceTitle = document.createElement("h2");
             deviceTitle.classList.add("device-title");
@@ -116,14 +128,30 @@
             deviceInfo.classList.add("device-info");
             deviceInfo.textContent = `Nombre: ${device.deviceName}`;
 
+            const buttonContainer = document.createElement("div");
+            buttonContainer.classList.add("button-container");
+
             const deleteButton = document.createElement("button");
-            deleteButton.classList.add("btn", "btn-danger");
+            deleteButton.classList.add("btn", "btn-danger", "btn-lg");
             deleteButton.textContent = "Eliminar";
             deleteButton.onclick = () => deleteDevice(device._id);
 
+            const historyButton = document.createElement("a", "button");
+            historyButton.classList.add(
+              "btn",
+              "btn-primary",
+              "btn-lg",
+              "btn-body"
+            );
+            historyButton.textContent = "Historial";
+            historyButton.href = `/device-history/${device._id}`;
+
+            buttonContainer.appendChild(deleteButton);
+            buttonContainer.appendChild(historyButton);
+
             deviceCard.appendChild(deviceTitle);
             deviceCard.appendChild(deviceInfo);
-            deviceCard.appendChild(deleteButton);
+            deviceCard.appendChild(buttonContainer);
 
             devicesList.appendChild(deviceCard);
           });
